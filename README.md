@@ -35,8 +35,7 @@ retention_policy = namespace.retention_policy
 Register interesting variables with `add_variable` and call `parse_env()` to 
 obtain a populated namespace. The namespace will have one property per found 
 *registered* variable, named the same as the environment variable in lower 
-case. Variable `NUM_WORKERS` thus gets the field name `namespace.
-num_workers`.
+case. Variable `NUM_WORKERS` thus gets the field name `namespace.num_workers`.
 
 ### Generating a description text
 In addition, to further clarify how your 
