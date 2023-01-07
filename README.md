@@ -4,6 +4,15 @@
 look for as program arguments/config. This library aims at providing an as 
 similar as possible experience to that of using Python's `argparse` package.
 
+## Why envargs?
+As most containerized applications take most or at least part of their 
+runtime config from environment variables I always seemed to reimplement the 
+same parsing utilities for new projects. `envargs.EnvParser` gives you a 
+no-dependencies quick way of specifying which variables your program needs 
+to run, which are mandatory and which are not, and their data types. A 
+single call to `parse_env` and your registered environment variables are 
+decoded, ready to be used.
+
 ## Usage
 Registering interesting variables and getting a hold of them in your running
 program is very straight forward:
@@ -28,6 +37,31 @@ obtain a populated namespace. The namespace will have one property per found
 *registered* variable, named the same as the environment variable in lower 
 case. Variable `NUM_WORKERS` thus gets the field name `namespace.
 num_workers`.
+
+### Generating a description text
+In addition, to further clarify how your 
+application uses environment variables, an `envargs.EnvParser` provides a 
+helpful description property that can help determine if you have set up your 
+variables as expected. After calling `add_variables` on your `EnvParser` 
+instance for each interesting variable, the parsers `description` field will 
+contain a helpful text which describes all added variables, if they're 
+required, their types, and their default values (if any).
+
+```python
+import envargs
+import logging
+
+LOGGER = logging.getLogger(__name__)
+
+env_parser = envargs.EnvParser()
+env_parser.add_variable("NUM_WORKERS", type=int)
+env_parser.add_variable("RETRY_COUNTER", required=False, type=int)
+env_parser.add_variable("OVERLOAD_LIMIT", default="high")
+
+LOGGER.debug(env_parser.description)
+```
+This text can be added to an `argparse.ArgumentParser` description to show 
+the text easily from the commandline.
 
 ### Variable properties
 An environment variable, when registered, can be given a set of properties, 

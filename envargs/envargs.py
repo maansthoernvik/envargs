@@ -71,9 +71,27 @@ class EnvParser:
         found) variable can be referenced by 'ns.env_var_name_in_lower_caps'.
         """
 
-    def __init__(self, description=""):
-        self.description: str = description
+    def __init__(self):
         self.variables: list[Variable] = list()
+
+    @property
+    def description(self) -> str:
+        """
+        Generates a description based on all added variables (via
+        add_variable).
+        :return: a helpful description string
+        """
+        def default_text(default) -> str:
+            return "" if default is None else f" default={default}"
+
+        def required_text(required: bool) -> str:
+            return " required" if required else ""
+
+        desc = "Environment variables: \n\n"
+        for var in self.variables:
+            desc += f"\t{var.name} ({var.var_type}):{required_text(var.required)}{default_text(var.default)} dest={var.dest}\n"  # noqa
+
+        return desc
 
     def add_variable(self,
                      name: str,

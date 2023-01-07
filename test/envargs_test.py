@@ -8,6 +8,13 @@ from envargs.errors import RequiredError, ParseError
 
 class EnvParserTest(unittest.TestCase):
 
+    def test_description(self):
+        ep = EnvParser()
+        ep.add_variable("BOOL", type=bool, default=False)
+        ep.add_variable("INT", type=int)
+        ep.add_variable("STR", required=False)
+        print(ep.description)
+
     def test_raises_required_error(self):
         ep = EnvParser()
         ep.add_variable("DUNT_EXIST")
