@@ -1,4 +1,5 @@
 # envargs
+[![codecov](https://codecov.io/gh/maansthoernvik/envargs/branch/master/graph/badge.svg?token=HXYFRI3THX)](https://codecov.io/gh/maansthoernvik/envargs)
 
 `envargs` gives you an easy way of specifying which environment variables to
 look for as program arguments/config. This library aims at providing an as 
