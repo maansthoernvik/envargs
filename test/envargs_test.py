@@ -8,6 +8,9 @@ from envargs.errors import RequiredError, ParseError
 
 class EnvParserTest(unittest.TestCase):
 
+    def setUp(self) -> None:
+        os.environ = dict()
+
     def test_description(self):
         ep = EnvParser()
         ep.add_variable("BOOL", type=bool, default=False)
