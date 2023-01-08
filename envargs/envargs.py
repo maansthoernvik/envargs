@@ -57,7 +57,7 @@ class Variable:
 
         return decoded
 
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         return f"<Variable at {hex(id(self))}: name={self.name} var_type={self.var_type} required={self.required} default={self.default} dest={self.dest}>"  # noqa
 
 

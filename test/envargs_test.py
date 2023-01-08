@@ -16,7 +16,7 @@ class EnvParserTest(unittest.TestCase):
         ep.add_variable("BOOL", type=bool, default=False)
         ep.add_variable("INT", type=int)
         ep.add_variable("STR", required=False)
-        print(ep.description)
+        self.assertTrue(len(ep.description) > 0)
 
     def test_raises_required_error(self):
         ep = EnvParser()
@@ -89,7 +89,7 @@ class EnvParserTest(unittest.TestCase):
         self.assertEqual(ns.sTr, "STR-val")
         self.assertRaises(AttributeError, lambda: ns.__getattribute__("str"))
 
-    def test_default_incorrect_type(self):
+    def test_raises_type_error(self):
         ep = EnvParser()
         self.assertRaises(TypeError,
                           lambda:
@@ -101,3 +101,11 @@ class EnvParserTest(unittest.TestCase):
 
         ns = ep.parse_env()
         self.assertIsNone(ns.str)
+
+    def test_raises_parse_error(self):
+        os.environ["INT"] = "abc"
+
+        ep = EnvParser()
+        ep.add_variable("INT", type=int)
+
+        self.assertRaises(ParseError, lambda: ep.parse_env())

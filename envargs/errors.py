@@ -4,7 +4,7 @@ class EnvError(Exception):
     def __init__(self, *args):
         self.msg = self.msg.format(*args)
 
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         return self.msg
 
 
