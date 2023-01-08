@@ -93,9 +93,9 @@ class EnvParser:
         def required_text(required: bool) -> str:
             return " required" if required else ""
 
-        max_name_length = 0
-        for var in self.variables:
-            var.name
+        # max_name_length = 0
+        # for var in self.variables:
+        #     var.name
 
         desc = "Environment variables: \n\n"
         for var in self.variables:
