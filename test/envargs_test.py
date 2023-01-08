@@ -88,6 +88,13 @@ class EnvParserTest(unittest.TestCase):
 
     def test_default_incorrect_type(self):
         ep = EnvParser()
-        self.assertRaises(ValueError,
+        self.assertRaises(TypeError,
                           lambda:
                           ep.add_variable("STR", type=str, default=123))
+
+    def test_optional_without_default(self):
+        ep = EnvParser()
+        ep.add_variable("STR", required=False)
+
+        ns = ep.parse_env()
+        self.assertIsNone(ns.str)

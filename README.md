@@ -60,7 +60,25 @@ env_parser.add_variable("OVERLOAD_LIMIT", default="high")
 LOGGER.debug(env_parser.description)
 ```
 This text can be added to an `argparse.ArgumentParser` description to show 
-the text easily from the commandline.
+the text easily from the commandline. Note the use of the raw formatter 
+class to avoid stripping line breaks.
+```python
+import argparse
+import envargs
+
+env_parser = envargs.EnvParser()
+env_parser.add_variable("WORK_DIST_STRATEGY", default="round-robin")
+env_parser.add_variable("CPU_OVERLOAD_LIMIT_PERCENT", type=int, default=80)
+
+arg_parser = argparse.ArgumentParser(
+   formatter_class=argparse.RawDescriptionHelpFormatter,
+   description="""
+This is the best program, ever written, clearly.
+
+Below, some info on environment variables used \/
+""" + env_parser.description)
+...
+```
 
 ### Variable properties
 An environment variable, when registered, can be given a set of properties, 
@@ -92,6 +110,21 @@ The above will attempt to find the environment variable
 `ACCEPTOR_THROTTLING` and if it doesn't exist, fall back on `False` as a 
 default value. The namespace returned by `parse_env` will therefore always 
 be populated with the `acceptor_throttling` property.
+
+An optional environment variable that isn't present at the time of calling 
+`parse_env` will still yield an attribute in the returmed namespace, set to 
+`None`.
+
+```python
+import envargs
+
+env_parser = envargs.EnvParser()
+env_parser.add_variable("OPTIONAL_SETTING", required=False)
+namespace = env_parser.parse_env()
+
+# Will not raise an assertion error
+assert namespace.optional_setting is None
+```
 
 ### Parsing booleans
 To simplify things for this library, booleans can be expressed in only a few 

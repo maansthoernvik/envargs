@@ -18,24 +18,30 @@ class Variable:
     """
 
     def __init__(self,
-                 name,
-                 var_type,
-                 required,
-                 default,
-                 dest):
-        self.name = name
-        self.var_type = var_type
-        self.required = required
-        self.default = default
-        self.dest = dest
+                 name: str,
+                 var_type: type,
+                 required: bool,
+                 default: Union[str, int, float, bool],
+                 dest: str):
+        self.name: str = name
+        self.var_type: type = var_type
+        self.required: bool = required
+        self.default: Union[str, int, float, bool] = default
+        self.dest: str = dest
 
     def decode(self, env_var: str) -> Union[str, int, float, bool]:
         """
         Decode an environment variable value string using the Variable
         instance fields.
         :param env_var: environment variable string
+        :raises: ParseError in case the string cannot be decoded into the
+                 variable's data type
         :return: a decoded environment variable string
         """
+        # String, no need to decode
+        if self.var_type == str:
+            return env_var
+
         if self.var_type == bool:
             if env_var in TRUTH_SET:
                 return True
@@ -87,9 +93,13 @@ class EnvParser:
         def required_text(required: bool) -> str:
             return " required" if required else ""
 
+        max_name_length = 0
+        for var in self.variables:
+            var.name
+
         desc = "Environment variables: \n\n"
         for var in self.variables:
-            desc += f"\t{var.name} ({var.var_type}):{required_text(var.required)}{default_text(var.default)} dest={var.dest}\n"  # noqa
+            desc += f"  {var.name} ({var.var_type.__name__}):{required_text(var.required)}{default_text(var.default)} dest={var.dest}\n"  # noqa
 
         return desc
 
@@ -115,7 +125,7 @@ class EnvParser:
         :param dest: field name on the namespace container returned by
                      EnvParser.parse_env. Defaults to the name parameter in
                      lower case
-        :raises: ValueErrorif type and the default type do not match
+        :raises: TypeError if type and the default type do not match
         :return: None
         """
         EnvParser._type_check_default(name, type, default)
@@ -143,26 +153,24 @@ class EnvParser:
         """
         ns = EnvParser.Namespace()
         for var in self.variables:
-            print("Getting OS var")
-
             # Fetch the variable and check required
             env_var = os.getenv(var.name)
             # Environment variable does not exist
             if env_var is None:
                 # Check required and default
                 if var.required and var.default is None:
+                    # Required and no default, ERROR
                     raise RequiredError(var.name)
                 elif var.default is not None:
+                    # Regardless of if required or not, if there's a default,
+                    # use it (since env var was None)
                     decoded_var = var.default
                 else:
-                    print("non-required variable not found, continuing...")
-                    continue
+                    # If no default and not required, set decoded value to None
+                    decoded_var = None
             else:
-                print(f"got var: {env_var}")
                 # Decode string according to type
                 decoded_var = var.decode(env_var)
-                print(f"decoded var type {type(decoded_var)} value "
-                      f"{decoded_var}")
 
             ns.__setattr__(var.dest, decoded_var)
 
@@ -179,9 +187,10 @@ class EnvParser:
         :param name: name of the environment variable checked
         :param t: the variable's type
         :param default: the default value of the variable
+        :raises: TypeError if the default type and t do not match
         :return: None
         """
         if default is not None and t != type(default):
-            raise ValueError(f"Cannot register variable '{name}' since the "
-                             f"default value type does not match the "
-                             f"variable's type")
+            raise TypeError(f"Cannot register variable '{name}' since the "
+                            f"default value type does not match the "
+                            f"variable's type")
