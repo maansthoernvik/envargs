@@ -7,6 +7,12 @@
 look for as program arguments/config. This library aims at providing an as 
 similar as possible experience to that of using Python's `argparse` package.
 
+## Installing
+
+```bash
+pip install envarguments
+```
+
 ## Why envargs?
 As most containerized applications take most or at least part of their 
 runtime config from environment variables I always seemed to reimplement the 
