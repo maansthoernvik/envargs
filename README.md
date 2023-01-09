@@ -1,4 +1,5 @@
 # envargs
+[![Build](https://github.com/maansthoernvik/envargs/actions/workflows/build.yml/badge.svg)](https://github.com/maansthoernvik/envargs/actions/workflows/build.yml)
 [![codecov](https://codecov.io/gh/maansthoernvik/envargs/branch/master/graph/badge.svg?token=HXYFRI3THX)](https://codecov.io/gh/maansthoernvik/envargs)
 [![PyPI version](https://badge.fury.io/py/envarguments.svg)](https://badge.fury.io/py/envarguments)
 

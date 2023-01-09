@@ -2,9 +2,10 @@ name: Release
 
 on:
   release:
+    types: [published]
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
